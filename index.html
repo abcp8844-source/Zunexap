@@ -10,15 +10,23 @@
     <style>
         @keyframes fly {
             0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-5px) rotate(5deg); }
+            50% { transform: translateY(-8px) rotate(6deg); }
             100% { transform: translateY(0px) rotate(0deg); }
         }
         .flying-plane {
-            animation: fly 1.5s ease-in-out infinite;
+            animation: fly 1.2s ease-in-out infinite;
         }
     </style>
 </head>
-<body class="bg-[#0f172a] text-slate-100 min-h-screen py-10 px-4">
+<body class="bg-[#0f172a] text-slate-100 min-h-screen py-10 px-4 relative">
+
+    <div id="globalLoader" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center space-y-4 hidden">
+        <div class="w-16 h-16 rounded-full border-2 border-amber-500/30 border-t-amber-400 flex items-center justify-center shadow-xl bg-amber-500/10">
+            <i class="fa-solid fa-plane text-amber-400 text-2xl flying-plane"></i>
+        </div>
+        <p id="loaderText" class="text-amber-400 font-medium text-sm tracking-wide">Processing your request...</p>
+    </div>
+
     <div class="max-w-2xl mx-auto">
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold text-amber-400">Zunex.hire</h1>
@@ -26,7 +34,7 @@
         </div>
 
         <div class="bg-[#1e293b] p-6 rounded-xl shadow-xl border border-slate-700 mb-10">
-            <form id="jobForm" class="space-y-4">
+            <form id="jobForm" onsubmit="return false;" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">Title</label>
                     <input type="text" id="title" required placeholder="Enter title here..." class="w-full px-4 py-2 bg-[#0f172a] border border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-white">
@@ -64,87 +72,98 @@
                     </div>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg transition duration-200 shadow-lg">
+                <button type="button" id="submitBtn" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg transition duration-200 shadow-lg cursor-pointer">
                     Submit to Zunex.hire
                 </button>
             </form>
         </div>
 
         <div class="bg-[#1e293b] p-6 rounded-xl shadow-xl border border-slate-700">
-            <h2 class="text-xl font-semibold mb-4 text-amber-400">Recent Submissions</h2>
+            <h2 class="text-xl font-semibold mb-4 text-amber-400">Recent Submissions History</h2>
             <div id="historyList" class="space-y-3">
-                <!-- لوڈنگ کے دوران گول دائرہ اور اڑتا ہوا جہاز نظر آئے گا -->
+                <p class="text-slate-400 text-sm text-center py-4">Loading history...</p>
             </div>
         </div>
     </div>
 
     <script>
-        const SUPABASE_URL = window.VEX_SUPABASE_URL || 'YOUR_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = window.VEX_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
+        const SUPABASE_URL = 'https://cwvcmynqcjreebcmepqf.supabase.co';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; // اپنی Supabase Anon Key یہاں ڈالیں
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const form = document.getElementById('jobForm');
+        const submitBtn = document.getElementById('submitBtn');
         const historyList = document.getElementById('historyList');
+        const globalLoader = document.getElementById('globalLoader');
+        const loaderText = document.getElementById('loaderText');
 
-        function showLoading() {
-            historyList.innerHTML = `
-                <div class="flex flex-col items-center justify-center py-6 space-y-3">
-                    <div class="w-12 h-12 rounded-full border-2 border-amber-500/30 border-t-amber-400 flex items-center justify-center shadow-md bg-amber-500/10">
-                        <i class="fa-solid fa-plane text-amber-400 text-lg flying-plane"></i>
-                    </div>
-                    <p class="text-slate-400 text-sm">Loading recent submissions...</p>
-                </div>
-            `;
+        function showLoader(text) {
+            loaderText.innerText = text || 'Processing...';
+            globalLoader.classList.remove('hidden');
+        }
+
+        function hideLoader() {
+            globalLoader.classList.add('hidden');
         }
 
         async function fetchHistory() {
-            showLoading();
-
             const { data, error } = await supabaseClient
                 .from('Zunex')
-                .select('id, title, created_at')
+                .select('id, title, snippet, link, country, category, query_used, created_at')
                 .order('id', { ascending: false })
                 .limit(10);
 
             if (error) {
-                historyList.innerHTML = '<p class="text-red-400 text-sm">Failed to load history: ' + error.message + '</p>';
+                historyList.innerHTML = `<p class="text-red-400 text-sm text-center py-2">Failed to load history: ${error.message}</p>`;
                 return;
             }
 
             if (data && data.length > 0) {
                 historyList.innerHTML = '';
                 data.forEach(itemData => {
+                    // تاریخ اور وقت کو پڑھنے کے قابل بنانے کے لیے
+                    const dateFormatted = itemData.created_at ? new Date(itemData.created_at).toLocaleString() : 'Just now';
+                    
                     const item = document.createElement('div');
-                    item.className = "flex items-center justify-between p-3 bg-[#0f172a] rounded-lg border border-slate-700";
+                    item.className = "p-4 bg-[#0f172a] rounded-lg border border-slate-700 space-y-2";
                     item.innerHTML = `
-                        <div>
-                            <h4 class="font-medium text-white">${itemData.title}</h4>
-                            <span class="text-xs text-slate-400">ID: #${itemData.id}</span>
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-white text-base">${itemData.title || 'Untitled'}</h4>
+                            <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                                ${itemData.category || 'General'}
+                            </span>
                         </div>
-                        <span class="px-3 py-1 text-xs font-semibold rounded-full border bg-green-500/20 text-green-400 border-green-500/30 flex items-center gap-1.5">
-                            <i class="fa-solid fa-check"></i> Submitted
-                        </span>
+                        <p class="text-slate-300 text-sm line-clamp-2">${itemData.snippet || ''}</p>
+                        <div class="flex flex-wrap items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800 gap-2">
+                            <span>Country: <strong class="text-slate-200">${itemData.country || 'N/A'}</strong></span>
+                            <span>Time: <strong class="text-slate-200">${dateFormatted}</strong></span>
+                            <span class="text-amber-400 font-mono">ID: #${itemData.id}</span>
+                        </div>
                     `;
                     historyList.appendChild(item);
                 });
             } else {
-                historyList.innerHTML = '<p class="text-slate-400 text-sm">No submissions found yet.</p>';
+                historyList.innerHTML = '<p class="text-slate-400 text-sm text-center py-4">No submissions found yet.</p>';
             }
         }
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.innerText = 'Submitting...';
+        submitBtn.addEventListener('click', async () => {
+            const title = document.getElementById('title').value;
+            const snippet = document.getElementById('snippet').value;
 
-            // سبمٹ ہونے سے پہلے ہسٹری میں جہاز والا اینیمیشن دکھائیں گے تاکہ یوزر کو معلوم ہو کہ پراسیس جاری ہے
-            showLoading();
+            if(!title || !snippet) {
+                alert('براہ کرم ٹائٹل اور ڈسکرپشن لازمی پُر کریں!');
+                return;
+            }
+
+            submitBtn.disabled = true;
+
+            // پوری سکرین پر خوبصورت جہاز والا لوڈنگ شو کریں
+            showLoader('Saving to Zunex Database...');
 
             const payload = {
-                title: document.getElementById('title').value,
-                snippet: document.getElementById('snippet').value,
+                title: title,
+                snippet: snippet,
                 link: document.getElementById('link').value,
                 country: document.getElementById('country').value,
                 category: document.getElementById('category').value,
@@ -154,19 +173,22 @@
             const { error } = await supabaseClient.from('Zunex').insert([payload]);
 
             if (error) {
+                hideLoader();
                 alert('Error: ' + error.message);
-                fetchHistory(); // ایرر کی صورت میں دوبارہ ہسٹری لوڈ کریں
             } else {
-                form.reset();
-                // جیسے ہی ڈیٹا بیس میں ڈیٹا پہنچ جائے گا، fetchHistory کال ہو گی اور جہاز رک کر گرین ٹک دکھا دے گا
+                document.getElementById('jobForm').reset();
+                loaderText.innerText = 'Success! Updating history...';
                 await fetchHistory();
+                hideLoader();
+                alert('Post successfully submitted and saved!');
             }
 
-            btn.disabled = false;
-            btn.innerText = 'Submit to Zunex.hire';
+            submitBtn.disabled = false;
         });
 
-        fetchHistory();
+        // پیج لوڈ ہوتے ہی ہسٹری حاصل کریں
+        showLoader('Connecting to Database...');
+        fetchHistory().then(() => hideLoader());
     </script>
 </body>
 </html>
