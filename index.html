@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Submission Portal</title>
+    <title>Zunex.hire - Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-[#0f172a] text-slate-100 min-h-screen py-10 px-4">
     <div class="max-w-2xl mx-auto">
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-amber-400">Job Submission Portal</h1>
-            <p class="text-slate-400 mt-2">Submit raw job entries directly to the database</p>
+            <h1 class="text-3xl font-bold text-amber-400">Zunex.hire</h1>
+            <p class="text-slate-400 mt-2">Submit your post securely to Zunex.hire</p>
         </div>
 
         <div class="bg-[#1e293b] p-6 rounded-xl shadow-xl border border-slate-700 mb-10">
@@ -54,15 +54,15 @@
                 </div>
 
                 <button type="submit" id="submitBtn" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg transition duration-200 shadow-lg">
-                    Submit Job
+                    Submit to Zunex.hire
                 </button>
             </form>
         </div>
 
         <div class="bg-[#1e293b] p-6 rounded-xl shadow-xl border border-slate-700">
-            <h2 class="text-xl font-semibold mb-4 text-amber-400">Submission History</h2>
+            <h2 class="text-xl font-semibold mb-4 text-amber-400">Recent Submissions</h2>
             <div id="historyList" class="space-y-3">
-                <p class="text-slate-400 text-sm">Loading history...</p>
+                <p class="text-slate-400 text-sm">Loading recent submissions...</p>
             </div>
         </div>
     </div>
@@ -82,7 +82,10 @@
                 .order('id', { ascending: false })
                 .limit(10);
 
-            if (error) return;
+            if (error) {
+                historyList.innerHTML = '<p class="text-red-400 text-sm">Failed to load history.</p>';
+                return;
+            }
 
             if (data && data.length > 0) {
                 historyList.innerHTML = '';
@@ -102,7 +105,7 @@
                     historyList.appendChild(item);
                 });
             } else {
-                historyList.innerHTML = '<p class="text-slate-400 text-sm">No submissions found.</p>';
+                historyList.innerHTML = '<p class="text-slate-400 text-sm">No submissions found yet.</p>';
             }
         }
 
@@ -129,10 +132,11 @@
             } else {
                 form.reset();
                 fetchHistory();
+                alert('Post successfully submitted to Zunex.hire!');
             }
 
             btn.disabled = false;
-            btn.innerText = 'Submit Job';
+            btn.innerText = 'Submit to Zunex.hire';
         });
 
         fetchHistory();
