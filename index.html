@@ -73,18 +73,12 @@
         <div class="bg-[#1e293b] p-6 rounded-xl shadow-xl border border-slate-700">
             <h2 class="text-xl font-semibold mb-4 text-amber-400">Recent Submissions</h2>
             <div id="historyList" class="space-y-3">
-                <div class="flex flex-col items-center justify-center py-6 space-y-3">
-                    <div class="w-12 h-12 rounded-full border-2 border-amber-500/30 border-t-amber-400 flex items-center justify-center shadow-md bg-amber-500/10">
-                        <i class="fa-solid fa-plane text-amber-400 text-lg flying-plane"></i>
-                    </div>
-                    <p class="text-slate-400 text-sm">Loading recent submissions...</p>
-                </div>
+                <!-- لوڈنگ کے دوران گول دائرہ اور اڑتا ہوا جہاز نظر آئے گا -->
             </div>
         </div>
     </div>
 
     <script>
-        // یہاں آپ کے Vercel کے ویری ایبل ناموں کے مطابق سیٹ کر دیا گیا ہے
         const SUPABASE_URL = window.VEX_SUPABASE_URL || 'YOUR_SUPABASE_URL';
         const SUPABASE_ANON_KEY = window.VEX_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
         
@@ -93,7 +87,20 @@
         const form = document.getElementById('jobForm');
         const historyList = document.getElementById('historyList');
 
+        function showLoading() {
+            historyList.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-6 space-y-3">
+                    <div class="w-12 h-12 rounded-full border-2 border-amber-500/30 border-t-amber-400 flex items-center justify-center shadow-md bg-amber-500/10">
+                        <i class="fa-solid fa-plane text-amber-400 text-lg flying-plane"></i>
+                    </div>
+                    <p class="text-slate-400 text-sm">Loading recent submissions...</p>
+                </div>
+            `;
+        }
+
         async function fetchHistory() {
+            showLoading();
+
             const { data, error } = await supabaseClient
                 .from('Zunex')
                 .select('id, title, created_at')
@@ -115,8 +122,8 @@
                             <h4 class="font-medium text-white">${itemData.title}</h4>
                             <span class="text-xs text-slate-400">ID: #${itemData.id}</span>
                         </div>
-                        <span class="px-3 py-1 text-xs font-semibold rounded-full border bg-amber-500/20 text-amber-400 border-amber-500/30">
-                            Submitted
+                        <span class="px-3 py-1 text-xs font-semibold rounded-full border bg-green-500/20 text-green-400 border-green-500/30 flex items-center gap-1.5">
+                            <i class="fa-solid fa-check"></i> Submitted
                         </span>
                     `;
                     historyList.appendChild(item);
@@ -132,6 +139,9 @@
             btn.disabled = true;
             btn.innerText = 'Submitting...';
 
+            // سبمٹ ہونے سے پہلے ہسٹری میں جہاز والا اینیمیشن دکھائیں گے تاکہ یوزر کو معلوم ہو کہ پراسیس جاری ہے
+            showLoading();
+
             const payload = {
                 title: document.getElementById('title').value,
                 snippet: document.getElementById('snippet').value,
@@ -145,10 +155,11 @@
 
             if (error) {
                 alert('Error: ' + error.message);
+                fetchHistory(); // ایرر کی صورت میں دوبارہ ہسٹری لوڈ کریں
             } else {
                 form.reset();
-                fetchHistory();
-                alert('Post successfully submitted to Zunex.hire!');
+                // جیسے ہی ڈیٹا بیس میں ڈیٹا پہنچ جائے گا، fetchHistory کال ہو گی اور جہاز رک کر گرین ٹک دکھا دے گا
+                await fetchHistory();
             }
 
             btn.disabled = false;
