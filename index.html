@@ -27,7 +27,7 @@
         <p id="loaderText" class="text-amber-400 font-medium text-sm tracking-wide">Processing your request...</p>
     </div>
 
-    <div class="max-w-2xl mx-auto">
+    <div class="max-w-3xl mx-auto">
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold text-amber-400">Zunex.hire</h1>
             <p class="text-slate-400 mt-2">Submit your post securely to Zunex.hire</p>
@@ -79,8 +79,13 @@
         </div>
 
         <div class="bg-[#1e293b] p-6 rounded-xl shadow-xl border border-slate-700">
-            <h2 class="text-xl font-semibold mb-4 text-amber-400">Recent Submissions History</h2>
-            <div id="historyList" class="space-y-3">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold text-amber-400">Recent Submissions History</h2>
+                <button onclick="fetchHistory()" class="text-xs px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-600 transition">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Refresh
+                </button>
+            </div>
+            <div id="historyList" class="space-y-4">
                 <p class="text-slate-400 text-sm text-center py-4">Loading history...</p>
             </div>
         </div>
@@ -109,7 +114,7 @@
         async function fetchHistory() {
             const { data, error } = await supabaseClient
                 .from('Zunex')
-                .select('id, title, snippet, link, country, category, query_used, created_at')
+                .select('*')
                 .order('id', { ascending: false })
                 .limit(10);
 
@@ -124,19 +129,23 @@
                     const dateFormatted = itemData.created_at ? new Date(itemData.created_at).toLocaleString() : 'Just now';
                     
                     const item = document.createElement('div');
-                    item.className = "p-4 bg-[#0f172a] rounded-lg border border-slate-700 space-y-2";
+                    item.className = "p-4 bg-[#0f172a] rounded-lg border border-slate-700 space-y-3";
                     item.innerHTML = `
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-bold text-white text-base">${itemData.title || 'Untitled'}</h4>
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <span class="text-xs font-mono text-amber-400 font-semibold">ID: #${itemData.id}</span>
                             <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
                                 ${itemData.category || 'General'}
                             </span>
                         </div>
-                        <p class="text-slate-300 text-sm line-clamp-2">${itemData.snippet || ''}</p>
-                        <div class="flex flex-wrap items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800 gap-2">
-                            <span>Country: <strong class="text-slate-200">${itemData.country || 'N/A'}</strong></span>
-                            <span>Time: <strong class="text-slate-200">${dateFormatted}</strong></span>
-                            <span class="text-amber-400 font-mono">ID: #${itemData.id}</span>
+                        <div>
+                            <h4 class="font-bold text-white text-base">${itemData.title || 'Untitled'}</h4>
+                            <p class="text-slate-300 text-sm mt-1 whitespace-pre-wrap">${itemData.snippet || ''}</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-slate-400 pt-2 border-t border-slate-800">
+                            <div>Country: <span class="text-slate-200 font-medium">${itemData.country || 'N/A'}</span></div>
+                            <div>Query: <span class="text-slate-200 font-medium">${itemData.query_used || 'N/A'}</span></div>
+                            <div class="md:col-span-2 truncate">Link: <a href="${itemData.link || '#'}" target="_blank" class="text-blue-400 hover:underline">${itemData.link || 'N/A'}</a></div>
+                            <div class="md:col-span-2 text-slate-500 text-[11px]">Saved at: ${dateFormatted}</div>
                         </div>
                     `;
                     historyList.appendChild(item);
