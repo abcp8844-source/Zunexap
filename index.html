@@ -67,7 +67,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-1">Query / Search Keyword <span class="text-xs text-amber-400 font-normal">(Internal system search term)</span></label>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Query / Search Keyword</label>
                         <input type="text" id="query_used" placeholder="e.g. Remote developer jobs in Europe" class="w-full px-4 py-2 bg-[#0f172a] border border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-white">
                     </div>
                 </div>
@@ -88,7 +88,7 @@
 
     <script>
         const SUPABASE_URL = 'https://cwvcmynqcjreebcmepqf.supabase.co';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; // اپنی Supabase Anon Key یہاں ڈالیں
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3dmNteW5xY2pyZWViY21lcHFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4NTYwODgsImV4cCI6MjA5ODQzMjA4OH0.AAVvDnU0NBI8leb9UHJJicFADmH2ywqXf4Nd9mZ3T6U';
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -121,7 +121,6 @@
             if (data && data.length > 0) {
                 historyList.innerHTML = '';
                 data.forEach(itemData => {
-                    // تاریخ اور وقت کو پڑھنے کے قابل بنانے کے لیے
                     const dateFormatted = itemData.created_at ? new Date(itemData.created_at).toLocaleString() : 'Just now';
                     
                     const item = document.createElement('div');
@@ -152,14 +151,12 @@
             const snippet = document.getElementById('snippet').value;
 
             if(!title || !snippet) {
-                alert('براہ کرم ٹائٹل اور ڈسکرپشن لازمی پُر کریں!');
+                alert('Please fill in the required fields (Title and Description)!');
                 return;
             }
 
             submitBtn.disabled = true;
-
-            // پوری سکرین پر خوبصورت جہاز والا لوڈنگ شو کریں
-            showLoader('Saving to Zunex Database...');
+            showLoader('Saving to Database...');
 
             const payload = {
                 title: title,
@@ -174,19 +171,17 @@
 
             if (error) {
                 hideLoader();
-                alert('Error: ' + error.message);
+                alert('Database Error: ' + error.message);
             } else {
                 document.getElementById('jobForm').reset();
                 loaderText.innerText = 'Success! Updating history...';
                 await fetchHistory();
                 hideLoader();
-                alert('Post successfully submitted and saved!');
             }
 
             submitBtn.disabled = false;
         });
 
-        // پیج لوڈ ہوتے ہی ہسٹری حاصل کریں
         showLoader('Connecting to Database...');
         fetchHistory().then(() => hideLoader());
     </script>
