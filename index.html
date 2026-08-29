@@ -3,123 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zunexhire - Portal</title>
+    <title>ZUNEXHIRE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #0a0f1d 0%, #172038 50%, #0f172a 100%);
+            background: linear-gradient(135deg, #090e1a 0%, #111827 50%, #0d1322 100%);
             font-family: system-ui, -apple-system, sans-serif;
         }
-        @keyframes fly {
+        @keyframes float-plane {
             0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-6px) rotate(4deg); }
+            50% { transform: translateY(-4px) rotate(3deg); }
             100% { transform: translateY(0px) rotate(0deg); }
         }
-        .flying-plane {
-            animation: fly 1.2s ease-in-out infinite;
+        .plane-anim {
+            animation: float-plane 1.5s ease-in-out infinite;
         }
-        .brand-gradient {
-            background: linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .card-glass {
-            background: rgba(23, 32, 56, 0.75);
-            backdrop-filter: blur(12px);
+        .glass-card {
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
     </style>
 </head>
-<body class="text-slate-100 min-h-screen py-8 px-4 relative selection:bg-amber-500 selection:text-slate-950">
+<body class="text-slate-100 min-h-screen py-8 px-4">
 
     <div id="globalLoader" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex flex-col items-center justify-center space-y-4 hidden">
-        <div class="w-16 h-16 rounded-full border-2 border-amber-500/30 border-t-amber-400 flex items-center justify-center shadow-2xl bg-amber-500/10">
-            <i class="fa-solid fa-plane text-amber-400 text-2xl flying-plane"></i>
+        <div class="w-14 h-14 rounded-2xl bg-blue-900/40 border border-amber-500/40 flex items-center justify-center shadow-xl">
+            <svg class="w-7 h-7 text-amber-400 plane-anim" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+            </svg>
         </div>
-        <p id="loaderText" class="text-amber-400 font-medium text-sm tracking-wide">Processing...</p>
+        <p id="loaderText" class="text-amber-400 font-medium text-xs tracking-wider uppercase">Processing...</p>
     </div>
 
-    <div class="max-w-3xl mx-auto space-y-8">
-        <header class="flex items-center justify-between card-glass px-6 py-4 rounded-2xl shadow-xl">
+    <div class="max-w-2xl mx-auto space-y-6">
+        
+        <header class="glass-card px-5 py-4 rounded-2xl shadow-xl flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center shadow-lg border border-blue-400/30">
-                    <i class="fa-solid fa-plane text-amber-400 text-lg transform -rotate-45"></i>
+                <div class="w-11 h-11 rounded-xl bg-[#0a2558] border border-blue-500/30 flex items-center justify-center shadow-lg">
+                    <svg class="w-6 h-6 text-amber-400 plane-anim transform -rotate-45" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+                    </svg>
                 </div>
-                <div>
-                    <h1 class="text-xl font-extxl font-bold tracking-wide brand-gradient">ZUNEXHIRE</h1>
-                    <p class="text-[11px] text-slate-400 font-medium uppercase tracking-widest">Admin Portal</p>
+                <div class="flex items-center space-x-1.5 tracking-tight">
+                    <span class="text-xl font-black text-white tracking-wider">ZUNEX</span>
+                    <span class="text-xl font-black text-amber-400 tracking-wider">HIRE</span>
                 </div>
             </div>
-            <div class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-slate-700/60 shadow-inner">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span class="text-xs text-slate-300 font-medium">Secure Node</span>
+            <div class="px-3 py-1.5 rounded-xl bg-blue-950/60 border border-blue-500/20 text-xs font-semibold text-amber-400 shadow-inner">
+                ADMIN PORTAL
             </div>
         </header>
 
-        <main class="card-glass p-6 md:p-8 rounded-2xl shadow-2xl space-y-6">
-            <div>
-                <h2 class="text-lg font-semibold text-white">Create New Post</h2>
-                <p class="text-xs text-slate-400 mt-0.5">Strict validation active. All fields must meet criteria before syncing.</p>
+        <main class="glass-card p-6 md:p-8 rounded-2xl shadow-2xl space-y-5">
+            <div class="border-b border-slate-800 pb-3">
+                <h2 class="text-base font-bold text-white tracking-wide">Add New Entry</h2>
+                <p class="text-xs text-slate-400 mt-0.5">Strict backend validation enabled. Fill out exact parameters below.</p>
             </div>
 
-            <form id="jobForm" onsubmit="return false;" class="space-y-5">
+            <form id="jobForm" onsubmit="return false;" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Title / Role</label>
-                    <input type="text" id="title" placeholder="e.g. Senior Software Engineer" class="w-full px-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:outline-none text-white text-sm transition">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Title</label>
+                    <input type="text" id="title" placeholder="Title" class="w-full px-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-white text-sm transition">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Description / Snippet (Min 40 words)</label>
-                    <textarea id="snippet" rows="4" placeholder="Enter detailed job description, visa requirements, or travel notes..." class="w-full px-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:outline-none text-white text-sm transition"></textarea>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Snippet</label>
+                    <textarea id="snippet" rows="4" placeholder="Snippet (minimum 40 words required)..." class="w-full px-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-white text-sm transition"></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">External Link</label>
-                        <input type="url" id="link" placeholder="https://zunexhire.com" class="w-full px-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:outline-none text-white text-sm transition">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Link</label>
+                        <input type="url" id="link" placeholder="Link" class="w-full px-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-white text-sm transition">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Country</label>
-                        <input type="text" id="country" placeholder="e.g. Norway, Denmark" class="w-full px-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:outline-none text-white text-sm transition">
+                        <input type="text" id="country" placeholder="Country" class="w-full px-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-white text-sm transition">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Category</label>
-                        <select id="category" class="w-full px-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:outline-none text-white text-sm transition">
-                            <option value="" disabled selected>Select Category</option>
+                        <select id="category" class="w-full px-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-white text-sm transition">
+                            <option value="" disabled selected>Category</option>
                             <option value="Job">Job</option>
                             <option value="Visa">Visa</option>
                             <option value="Travel">Travel</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Search Keyword / Query</label>
-                        <input type="text" id="query_used" placeholder="e.g. Remote jobs in Europe" class="w-full px-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:outline-none text-white text-sm transition">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Query</label>
+                        <input type="text" id="query_used" placeholder="Query" class="w-full px-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-white text-sm transition">
                     </div>
                 </div>
 
-                <div id="errorBox" class="hidden p-4 bg-red-950/40 border border-red-500/40 text-red-300 text-xs rounded-xl space-y-1.5 shadow-inner backdrop-blur-sm"></div>
+                <div id="errorBox" class="hidden p-3.5 bg-red-950/50 border border-red-500/40 text-red-300 text-xs rounded-xl space-y-1 shadow-inner"></div>
 
-                <button type="button" id="submitBtn" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-bold rounded-xl transition duration-200 shadow-lg shadow-amber-500/20 cursor-pointer text-sm">
-                    Publish to Database
+                <button type="button" id="submitBtn" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition duration-200 shadow-lg shadow-amber-500/20 cursor-pointer text-sm">
+                    Submit
                 </button>
             </form>
         </main>
 
-        <section class="card-glass p-6 md:p-8 rounded-2xl shadow-2xl space-y-4">
+        <section class="glass-card p-6 rounded-2xl shadow-xl space-y-4">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="text-base font-semibold text-amber-400">Recent History Feed</h3>
-                <button onclick="fetchHistory()" class="text-xs px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg border border-slate-700 transition flex items-center space-x-1.5">
-                    <i class="fa-solid fa-rotate-right text-[10px]"></i>
-                    <span>Refresh</span>
+                <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider">Recent Submissions History</h3>
+                <button onclick="fetchHistory()" class="text-xs px-3 py-1 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg border border-slate-700 transition">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Refresh
                 </button>
             </div>
             <div id="historyList" class="space-y-3">
-                <p class="text-slate-400 text-xs text-center py-6">Initializing feeds...</p>
+                <p class="text-slate-400 text-xs text-center py-4">Loading history...</p>
             </div>
         </section>
     </div>
@@ -153,7 +151,7 @@
                 .limit(10);
 
             if (error) {
-                historyList.innerHTML = `<p class="text-red-400 text-xs text-center py-2">Sync Error: ${error.message}</p>`;
+                historyList.innerHTML = `<p class="text-red-400 text-xs text-center py-2">Error: ${error.message}</p>`;
                 return;
             }
 
@@ -162,9 +160,9 @@
                 data.forEach(itemData => {
                     const dateFormatted = itemData.created_at ? new Date(itemData.created_at).toLocaleString() : 'Just now';
                     const item = document.createElement('div');
-                    item.className = "p-4 bg-slate-900/80 rounded-xl border border-slate-800 space-y-2.5 shadow-sm";
+                    item.className = "p-4 bg-slate-900/80 rounded-xl border border-slate-800 space-y-2";
                     item.innerHTML = `
-                        <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
                             <span class="text-[11px] font-mono text-amber-400 font-semibold">ID: #${itemData.id}</span>
                             <span class="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/20">
                                 ${itemData.category || 'General'}
@@ -174,10 +172,10 @@
                             <h4 class="font-bold text-white text-sm">${itemData.title || 'Untitled'}</h4>
                             <p class="text-slate-300 text-xs mt-1 leading-relaxed whitespace-pre-wrap line-clamp-2">${itemData.snippet || ''}</p>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-1.5 text-[11px] text-slate-400 pt-2 border-t border-slate-800/80">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-1 text-[11px] text-slate-400 pt-2 border-t border-slate-800">
                             <div>Country: <span class="text-slate-200 font-medium">${itemData.country || 'N/A'}</span></div>
                             <div>Query: <span class="text-slate-200 font-medium">${itemData.query_used || 'N/A'}</span></div>
-                            <div class="md:col-span-2 truncate">Link: <a href="${itemData.link || '#'}" target="_blank" class="text-sky-400 hover:underline">${itemData.link || 'N/A'}</a></div>
+                            <div class="md:col-span-2 truncate">Link: <a href="${itemData.link || '#'}" target="_blank" class="text-blue-400 hover:underline">${itemData.link || 'N/A'}</a></div>
                             <div class="md:col-span-2 text-slate-500 text-[10px]">Saved: ${dateFormatted}</div>
                         </div>
                     `;
@@ -197,18 +195,18 @@
             let errors = [];
 
             if (!category) {
-                errors.push("Category selection is required.");
+                errors.push("Category is required.");
             }
             if (!country) {
-                errors.push("Country field cannot be empty.");
+                errors.push("Country is required.");
             }
             if (!title || title.length < 3) {
-                errors.push("Valid role or title required.");
+                errors.push("Title is required.");
             }
             
             const wordCount = snippet ? snippet.split(/\s+/).length : 0;
             if (!snippet || wordCount < 40) {
-                errors.push("Snippet description must contain at least 40 words.");
+                errors.push("Snippet must contain at least 40 words.");
             }
 
             if (errors.length > 0) {
@@ -221,7 +219,7 @@
             }
 
             submitBtn.disabled = true;
-            showLoader('Syncing with database...');
+            showLoader('Saving to Database...');
 
             const payload = {
                 title: title,
@@ -239,7 +237,7 @@
                 alert('Database Error: ' + error.message);
             } else {
                 document.getElementById('jobForm').reset();
-                loaderText.innerText = 'Sync complete!';
+                loaderText.innerText = 'Success!';
                 await fetchHistory();
                 hideLoader();
             }
