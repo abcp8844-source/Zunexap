@@ -36,8 +36,8 @@
         <div class="bg-[#1e293b] p-6 rounded-xl shadow-xl border border-slate-700 mb-10">
             <form id="jobForm" onsubmit="return false;" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Title</label>
-                    <input type="text" id="title" required placeholder="Enter title here..." class="w-full px-4 py-2 bg-[#0f172a] border border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-white">
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Title (Role)</label>
+                    <input type="text" id="title" required placeholder="Enter role here..." class="w-full px-4 py-2 bg-[#0f172a] border border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-white">
                 </div>
 
                 <div>
@@ -52,7 +52,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-300 mb-1">Country</label>
-                        <input type="text" id="country" placeholder="Enter country name..." class="w-full px-4 py-2 bg-[#0f172a] border border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-white">
+                        <input type="text" id="country" required placeholder="Enter country name..." class="w-full px-4 py-2 bg-[#0f172a] border border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-white">
                     </div>
                 </div>
 
@@ -71,6 +71,8 @@
                         <input type="text" id="query_used" placeholder="e.g. Remote developer jobs in Europe" class="w-full px-4 py-2 bg-[#0f172a] border border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none text-white">
                     </div>
                 </div>
+
+                <div id="errorBox" class="hidden p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm space-y-1"></div>
 
                 <button type="button" id="submitBtn" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg transition duration-200 shadow-lg cursor-pointer">
                     Submit to Zunex.hire
@@ -101,6 +103,7 @@
         const historyList = document.getElementById('historyList');
         const globalLoader = document.getElementById('globalLoader');
         const loaderText = document.getElementById('loaderText');
+        const errorBox = document.getElementById('errorBox');
 
         function showLoader(text) {
             loaderText.innerText = text || 'Processing...';
@@ -156,11 +159,32 @@
         }
 
         submitBtn.addEventListener('click', async () => {
-            const title = document.getElementById('title').value;
-            const snippet = document.getElementById('snippet').value;
+            errorBox.innerHTML = '';
+            errorBox.classList.add('hidden');
 
-            if(!title || !snippet) {
-                alert('Please fill in the required fields (Title and Description)!');
+            const title = document.getElementById('title').value.trim();
+            const snippet = document.getElementById('snippet').value.trim();
+            const country = document.getElementById('country').value.trim();
+            const category = document.getElementById('category').value;
+
+            let errors = [];
+
+            if (!country) {
+                errors.push("Country field is required.");
+            }
+            if (!category) {
+                errors.push("Please select a valid category.");
+            }
+            if (!title || title.length < 3) {
+                errors.push("Title (Role) must contain a valid role description.");
+            }
+            if (!snippet || snippet.split(/\s+/).length < 20) {
+                errors.push("Description must contain at least 20 words.");
+            }
+
+            if (errors.length > 0) {
+                errorBox.innerHTML = errors.map(e => `<div>• ${e}</div>`).join('');
+                errorBox.classList.remove('hidden');
                 return;
             }
 
@@ -171,8 +195,8 @@
                 title: title,
                 snippet: snippet,
                 link: document.getElementById('link').value,
-                country: document.getElementById('country').value,
-                category: document.getElementById('category').value,
+                country: country,
+                category: category,
                 query_used: document.getElementById('query_used').value
             };
 
@@ -180,7 +204,8 @@
 
             if (error) {
                 hideLoader();
-                alert('Database Error: ' + error.message);
+                errorBox.innerHTML = `<div>• Database Error: ${error.message}</div>`;
+                errorBox.classList.remove('hidden');
             } else {
                 document.getElementById('jobForm').reset();
                 loaderText.innerText = 'Success! Updating history...';
